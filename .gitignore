@@ -1,0 +1,35 @@
+# Local Blender runtime and downloaded archives
+/tools/blender-*/
+/tools/downloads/*.zip
+
+# Third-party source binaries are preserved locally but are not committed
+/assets/source_*/**/*.zip
+/assets/source_*/**/*.glb
+/assets/source_*/**/*.gltf
+/assets/source_*/**/*.bin
+/assets/source_*/**/*.dae
+/assets/source_*/**/*.fbx
+/assets/source_*/**/*.obj
+/assets/source_*/**/*.png
+/assets/source_*/**/*.jpg
+/assets/source_*/**/*.jpeg
+
+# Blender working files and backups
+*.blend
+*.blend1
+*.blend2
+*.blend@
+
+# Local caches
+__pycache__/
+*.pyc
+
+# Build outputs, backups, failed experiments and release artifacts
+**/bin/
+**/obj/
+/backups/
+/exports/archive/
+/exports/failed/
+/exports/staging/
+/characters/**/references/generated/
+/dist/
