@@ -1,11 +1,13 @@
-# 一二 / Yier OC2DIYChef v{{VERSION}}
+# 一二 / Sign OC2DIYChef 特别版 v{{VERSION}}
 
 作者：**DUKEY**
 
-![一二在 Overcooked! 2 中的实机效果](images/yier-in-game.png)
+![Sign 在 Overcooked! 2 中的实机效果](images/sign-in-game.png)
 
-这是供本地单机使用的一二正式安装包。角色 ID 为 `174`，默认帽子为
-`YierCap`。包内还包含角色专属尾气调色 GUI，以及已通过实机验证的
+这是供本地单机使用的一二 `Sign` 特别版安装包。资源目录与游戏内配置名均为
+`Sign`，内部联网标识仍由 `INFO` 中的 ID `174` 提供，目录名不带 `174-` 前缀。
+默认不戴帽子，可选专属帽为 `SignCap`。包内还包含角色专属尾气调色 GUI，以及
+已通过实机验证的
 OC2DIYLevel 0.9.0 异步加载兼容插件。
 
 ## 已验证环境
@@ -13,7 +15,7 @@ OC2DIYLevel 0.9.0 异步加载兼容插件。
 - Windows Steam 标准版 Overcooked! 2（x86）
 - BepInEx 5.4.22 x86（包内包含官方原版，已有兼容版本时不会覆盖）
 - OC2DIYChef v1.2，固定上游提交 `93ab0554`（包内包含）
-- OC2DIYChefTrailColor 0.2.1 + GUI 0.2.1，按 F10 打开
+- OC2DIYChefTrailColor 0.2.2 + GUI 0.2.2，按 F10 打开
 - OC2DIYLevel 0.9.0 + OC2DIYLevelAsyncLoader 0.1.0（原关卡插件需已安装）
 
 Steam Crossplay Beta/Epic x64 版本尚未验证，不能使用本包内的 x86 BepInEx。
@@ -22,28 +24,30 @@ Steam Crossplay Beta/Epic x64 版本尚未验证，不能使用本包内的 x86 
 
 1. 完整解压 ZIP，不要直接在压缩包内运行脚本。
 2. 关闭 Overcooked! 2。
-3. 把解压目录内的全部文件复制到含有 `Overcooked2.exe` 的游戏主目录。
-4. 双击 `Install-Yier.bat`。
+3. 把 ZIP 直接解压到含有 `Overcooked2.exe` 的游戏主目录；解压后只会新增一个
+   `Sign-OC2DIYChef-Special-v{{VERSION}}` 文件夹，不要把其中的文件拆散复制出来。
+4. 进入这个新文件夹，双击 `Install-Sign.bat`。
 
 目录结构示例：
 
 ```text
 Overcooked! 2/
 ├─ Overcooked2.exe
-├─ Install-Yier.bat
-├─ Install-Yier.ps1
-├─ PACKAGE-VERSION.txt
-└─ payload/
+└─ Sign-OC2DIYChef-Special-v{{VERSION}}/
+   ├─ Install-Sign.bat
+   ├─ Install-Sign.ps1
+   ├─ PACKAGE-VERSION.txt
+   └─ payload/
 ```
 
-BAT 只使用其自身所在目录，避免装到另一个游戏副本。安装开始前会验证
-`SHA256SUMS.txt` 中列出的全部包文件，并检查游戏、BepInEx 架构和运行状态。
+BAT 只把安装文件夹的上一级作为游戏目录，避免装到另一个游戏副本。安装开始前会
+验证 `SHA256SUMS.txt` 中列出的全部包文件，并检查游戏、BepInEx 架构和运行状态。
 
 也可以手动运行：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Yier.ps1 `
-  -GameDir 'D:\SteamLibrary\steamapps\common\Overcooked! 2'
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Sign.ps1 `
+  -GameDir '..'
 ```
 
 ## 安装内容
@@ -52,8 +56,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Yier.ps1 `
 
 ```text
 BepInEx/plugins/OC2DIYChef/OC2DIYChef.dll
-BepInEx/plugins/OC2DIYChef/Resources/174-yier/
-BepInEx/plugins/OC2DIYChef/Resources/HATS/YierCap/
+BepInEx/plugins/OC2DIYChef/Resources/Sign/
+BepInEx/plugins/OC2DIYChef/Resources/HATS/SignCap/
 BepInEx/plugins/OC2DIYChefTrailColor/
 BepInEx/plugins/OC2HostUtilities/v1.8.0/HostUtilities.dll
 BepInEx/plugins/OC2DIYLevelAsyncLoader/                # 条件安装
@@ -62,8 +66,12 @@ BepInEx/plugins/OC2DIYLevelAsyncLoader/                # 条件安装
 `prefer.txt` 中会保留其他角色设置，并确保一二只有这一行：
 
 ```text
-174-yier HAT=YierCap
+Sign HAT=None
 ```
+
+因此脚本安装后默认无帽。OC2DIYChef 1.2 没有自定义帽选择界面；如需启用专属帽，
+关闭游戏后把上面一行改为 `Sign HAT=SignCap`，再重新启动游戏。需要恢复无帽时
+改回 `Sign HAT=None`。同一角色不要保留两行配置。
 
 一二的默认粒子校准值是 `WalkColor=C54579FF`、`DashColor=5BAC2EFF`；这两个值
 已在当前游戏粒子材质下实机确认为“走路白色、冲刺浅粉色”。安装器不会覆盖已经
@@ -82,7 +90,7 @@ HostUtilities 上游未提供明确的再分发许可证，因此它不直接放
 一键安装器从官方地址取得。若下载失败，一二和帽子仍会完成安装。也可主动跳过：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Yier.ps1 `
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Sign.ps1 `
   -GameDir 'D:\SteamLibrary\steamapps\common\Overcooked! 2' `
   -SkipTrailColor
 ```
@@ -112,7 +120,7 @@ SHA-256: 28155A7CBF359D6C8900C76F369BB224971A77F3CAE74FB8846717EFBD4B15D1
 `prefer.txt` 保存到：
 
 ```text
-<游戏目录>/BepInEx/YierPackageBackups/<时间戳>/
+<游戏目录>/BepInEx/SignPackageBackups/<时间戳>/
 ```
 
 需要回滚时先关闭游戏，再把该目录内的文件按原相对路径复制回游戏目录。

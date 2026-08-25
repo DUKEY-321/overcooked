@@ -4,4 +4,4 @@ Source: https://sketchfab.com/3d-models/yier-b15f13be61224129ba3123c0041206c2
 License: Creative Commons Attribution 4.0 International (CC BY 4.0)
 License URL: https://creativecommons.org/licenses/by/4.0/
 Mod author: DUKEY
-Modified for a non-commercial Overcooked! 2 test mod: mesh cleanup, component separation, flat-color UV atlas, blink state, scale, hand alignment, and YierCap separation.
+Modified for a non-commercial Overcooked! 2 test mod: mesh cleanup, component separation, flat-color UV atlas, blink state, scale, hand alignment, and SignCap separation.

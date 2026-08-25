@@ -15,11 +15,12 @@ sliders, HEX input, live preview and explicit persistence.
 - All 61 official chefs listed by the installed OC2DIYChef build are available.
 - Every DIY chef found below `OC2DIYChef\Resources` is available.
 - New characters encountered at runtime are added automatically.
-- Profiles other than Yier are disabled by default, so their original
+- Profiles other than Sign are disabled by default, so their original
   HostUtilities/game colours are preserved until the user enables or edits
   them in the GUI.
-- `174-yier` keeps the existing `[Character.174-yier]` configuration section,
-  including any colours already saved by the user.
+- The special character resource is `Sign` with ID `174`. It uses
+  `[Character.Sign]`, while its stable runtime identity remains
+  `diy:174:Chef_Sign`.
 
 Character identity is persistent across sessions: official chefs use their
 `ChefAvatarData.HeadName`, while DIY chefs use their resource ID and HeadName.

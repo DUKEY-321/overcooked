@@ -12,8 +12,8 @@ from mathutils import Vector
 
 PROJECT_ROOT = Path(r"F:\dev\overcooke")
 EXPECTED_BLEND = PROJECT_ROOT / "characters" / "yier" / "source" / "yier_work-v004.blend"
-PACKAGE_HAT_NAME = "YierCap"
-WORKSPACE_HAT_NAMES = ("YierCap", "YierBlueCap")
+PACKAGE_HAT_NAME = "SignCap"
+WORKSPACE_HAT_NAMES = ("SignCap", "YierCap", "YierBlueCap")
 HAT_TEMPLATE_OFFSET = Vector((0.0, 0.10684707760810852, 1.036182165145874))
 EXPECTED = {
     "Body_Body": ((1710, 3312), (-0.218287, -0.244838, 0.210471), (0.230154, 0.203603, 0.612743)),
@@ -146,7 +146,7 @@ def verify_round_trip(path: Path, expected: bpy.types.Object, label: str) -> Non
 
 def main() -> None:
     resources_root = parse_resources_root()
-    character_package = resources_root / "174-yier"
+    character_package = resources_root / "Sign"
     hat_package = resources_root / "HATS" / PACKAGE_HAT_NAME
     require(bpy.app.background, "Verification must run in a background process")
     require(Path(bpy.data.filepath) == EXPECTED_BLEND, f"Unexpected v004 path: {bpy.data.filepath}")
@@ -174,8 +174,15 @@ def main() -> None:
     require(optional.get("hat_name") == workspace_hat_name and optional.get("hat_triangles") == 1296, "Optional hat metadata mismatch")
     require(tuple(optional.get("hat_template_offset_blender")) == tuple(HAT_TEMPLATE_OFFSET), "Hat offset metadata mismatch")
     require(bpy.context.scene.get("workspace_revision") == "v004-default-hatless-optional-cap", "Scene revision mismatch")
-    require(bpy.context.scene.get("prefer_default") == "174-yier HAT=None", "Default prefer metadata mismatch")
-    require(bpy.context.scene.get("prefer_optional_hat") == f"174-yier HAT={workspace_hat_name}", "Optional prefer metadata mismatch")
+    preference_pair = (
+        bpy.context.scene.get("prefer_default"),
+        bpy.context.scene.get("prefer_optional_hat"),
+    )
+    allowed_preference_pairs = {
+        ("174-yier HAT=None", f"174-yier HAT={workspace_hat_name}"),
+        ("Sign HAT=None", "Sign HAT=SignCap"),
+    }
+    require(preference_pair in allowed_preference_pairs, "Preference metadata mismatch")
     require(not export.hide_viewport and not export.hide_render, "EXPORT_PARTS must be visible")
     require(optional.hide_viewport and optional.hide_render, "OPTIONAL_HATS should be hidden by default")
     require(root_reference.hide_viewport and root_reference.hide_render, "HAT_ROOT_REFERENCE should be hidden by default")

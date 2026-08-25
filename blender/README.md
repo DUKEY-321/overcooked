@@ -66,7 +66,7 @@
 - `REF_EXISTING`：从 `171-pinkpig` 导入的成功样本。默认隐藏、禁止选择、禁止渲染；只需在 Outliner 切换显示器图标来比对比例。
 - `SOURCE_YIER`：一二原始模型、清理、减面和重拓扑工作区。脚本会递归查找源文件，优先级依次为 GLB、glTF、FBX、OBJ、DAE，避免同一模型的多个下载格式重复导入。当前下载包中的 `original_dae_download\model\temp_export.dae` 会作为兜底源；若 Blender 没有 Collada 导入器，改用 Sketchfab GLB，或先启用官方 Collada 扩展。
 - `EXPORT_PARTS`：只放最终可导出的游戏网格。
-- `OPTIONAL_HATS`：HatBase 局部坐标的可选帽导出网格；发布名为 `YierCap`。旧 v004 工作区内部仍可能保留历史名 `YierBlueCap`，验证器同时兼容两者。
+- `OPTIONAL_HATS`：HatBase 局部坐标的可选帽导出网格；当前发布名为 `SignCap`。v004 工作区内部仍可能保留历史名 `YierCap` 或 `YierBlueCap`，验证器同时兼容这些内部名称。
 - `HAT_ROOT_REFERENCE`：只供 Blender 预览原戴帽位置，禁止直接导出到游戏。
 - `WORKSPACE_GUIDES`：原点、参考中心、正视和侧视正交相机。默认活动相机是 `CAM_FRONT`。
 - `README_YIER.txt`：保存在 `.blend` 内的部件命名速查。

@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$Version = '1.0.0',
+    [string]$Version = '1.0.1',
     [string]$DistDir,
     [switch]$Force
 )
@@ -17,13 +17,14 @@ if ([string]::IsNullOrWhiteSpace($DistDir)) {
     $DistDir = Join-Path $projectRoot 'dist'
 }
 $distRoot = [IO.Path]::GetFullPath($DistDir).TrimEnd('\', '/')
-$packageName = "Yier-OC2DIYChef-v$Version"
+$packageName = "Sign-OC2DIYChef-Special-v$Version"
 $stagingRoot = [IO.Path]::GetFullPath((Join-Path $distRoot 'staging'))
 $packageRoot = [IO.Path]::GetFullPath((Join-Path $stagingRoot $packageName))
 $zipPath = [IO.Path]::GetFullPath((Join-Path $distRoot ($packageName + '.zip')))
+$zipChecksumPath = [IO.Path]::GetFullPath($zipPath + '.sha256')
 $cacheRoot = [IO.Path]::GetFullPath((Join-Path $distRoot 'cache'))
 
-foreach ($path in @($stagingRoot, $packageRoot, $zipPath, $cacheRoot)) {
+foreach ($path in @($stagingRoot, $packageRoot, $zipPath, $zipChecksumPath, $cacheRoot)) {
     if (-not $path.StartsWith($distRoot + '\', [StringComparison]::OrdinalIgnoreCase)) {
         throw "Release path escaped DistDir: $path"
     }
@@ -36,6 +37,10 @@ if (Test-Path -LiteralPath $packageRoot) {
 if (Test-Path -LiteralPath $zipPath) {
     if (-not $Force) { throw "Release ZIP exists: $zipPath (use -Force to rebuild)" }
     Remove-Item -LiteralPath $zipPath -Force
+}
+if (Test-Path -LiteralPath $zipChecksumPath) {
+    if (-not $Force) { throw "Release checksum exists: $zipChecksumPath (use -Force to rebuild)" }
+    Remove-Item -LiteralPath $zipChecksumPath -Force
 }
 New-Item -ItemType Directory -Path $packageRoot,$cacheRoot -Force | Out-Null
 
@@ -123,8 +128,8 @@ Copy-Item -LiteralPath $diyDll -Destination (Join-Path $diyPayload 'OC2DIYChef.d
 Copy-Item -LiteralPath $officialList -Destination (Join-Path $diyPayload 'official-all.txt')
 
 $resourcesPayload = Join-Path $packageRoot 'payload\Resources'
-Copy-DirectoryContents -Source (Join-Path $projectRoot 'exports\Resources\174-yier') -Destination (Join-Path $resourcesPayload '174-yier')
-Copy-DirectoryContents -Source (Join-Path $projectRoot 'exports\Resources\HATS\YierCap') -Destination (Join-Path $resourcesPayload 'HATS\YierCap')
+Copy-DirectoryContents -Source (Join-Path $projectRoot 'exports\Resources\Sign') -Destination (Join-Path $resourcesPayload 'Sign')
+Copy-DirectoryContents -Source (Join-Path $projectRoot 'exports\Resources\HATS\SignCap') -Destination (Join-Path $resourcesPayload 'HATS\SignCap')
 
 $trailPayload = Join-Path $packageRoot 'payload\TrailColor'
 New-Item -ItemType Directory -Path $trailPayload -Force | Out-Null
@@ -147,25 +152,25 @@ Copy-Item -LiteralPath $asyncSource -Destination $asyncPayload
 $configPayload = Join-Path $packageRoot 'payload\config'
 New-Item -ItemType Directory -Path $configPayload -Force | Out-Null
 Copy-Item `
-    -LiteralPath (Join-Path $projectRoot 'packaging\yier\default-trail-color.cfg') `
+    -LiteralPath (Join-Path $projectRoot 'packaging\sign\default-trail-color.cfg') `
     -Destination (Join-Path $configPayload 'local.oc2.diycheftrailcolor.cfg')
 Copy-Item `
-    -LiteralPath (Join-Path $projectRoot 'packaging\yier\default-async-level-loader.cfg') `
+    -LiteralPath (Join-Path $projectRoot 'packaging\sign\default-async-level-loader.cfg') `
     -Destination (Join-Path $configPayload 'dukey.oc2.diylevel.asyncloader.cfg')
 
 $utf8NoBom = New-Object Text.UTF8Encoding($false)
-$readmeTemplate = [IO.File]::ReadAllText((Join-Path $projectRoot 'packaging\yier\README.md'))
+$readmeTemplate = [IO.File]::ReadAllText((Join-Path $projectRoot 'packaging\sign\README.md'))
 $readme = $readmeTemplate.Replace('{{VERSION}}', $Version)
 [IO.File]::WriteAllText((Join-Path $packageRoot 'README.md'), $readme, $utf8NoBom)
 [IO.File]::WriteAllText((Join-Path $packageRoot 'PACKAGE-VERSION.txt'), $Version + [Environment]::NewLine, $utf8NoBom)
-Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\Install-Yier.bat') -Destination (Join-Path $packageRoot 'Install-Yier.bat')
-Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\Install-Yier.ps1') -Destination (Join-Path $packageRoot 'Install-Yier.ps1')
+Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\sign\Install-Sign.bat') -Destination (Join-Path $packageRoot 'Install-Sign.bat')
+Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\sign\Install-Sign.ps1') -Destination (Join-Path $packageRoot 'Install-Sign.ps1')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination (Join-Path $packageRoot 'LICENSE')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'THIRD_PARTY_NOTICES.md') -Destination (Join-Path $packageRoot 'THIRD_PARTY_NOTICES.md')
 
 $imagesRoot = Join-Path $packageRoot 'images'
 New-Item -ItemType Directory -Path $imagesRoot -Force | Out-Null
-Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\images\yier-in-game.png') -Destination $imagesRoot
+Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\images\yier-in-game.png') -Destination (Join-Path $imagesRoot 'sign-in-game.png')
 
 $docsRoot = Join-Path $packageRoot 'docs'
 New-Item -ItemType Directory -Path $docsRoot -Force | Out-Null
@@ -177,7 +182,7 @@ $licensesRoot = Join-Path $packageRoot 'licenses'
 New-Item -ItemType Directory -Path $licensesRoot -Force | Out-Null
 Copy-Item -LiteralPath $diyLicense -Destination (Join-Path $licensesRoot 'OC2DIYChef-MIT.txt')
 Copy-Item -LiteralPath $bepLicense -Destination (Join-Path $licensesRoot 'BepInEx-MIT.txt')
-Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSES\yier-sketchfab-b15f13be.md') -Destination (Join-Path $licensesRoot 'Yier-CC-BY-4.0-Attribution.md')
+Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSES\yier-sketchfab-b15f13be.md') -Destination (Join-Path $licensesRoot 'Sign-Source-Model-CC-BY-4.0-Attribution.md')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSES\DISTRIBUTION_NOTICE.md') -Destination (Join-Path $licensesRoot 'DISTRIBUTION_NOTICE.md')
 
 $sumLines = New-Object 'System.Collections.Generic.List[string]'
@@ -190,8 +195,29 @@ foreach ($file in Get-ChildItem -LiteralPath $packageRoot -Recurse -File -Force 
 [IO.File]::WriteAllLines((Join-Path $packageRoot 'SHA256SUMS.txt'), $sumLines.ToArray(), (New-Object Text.UTF8Encoding($false)))
 
 Compress-Archive -LiteralPath $packageRoot -DestinationPath $zipPath -CompressionLevel Optimal
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$archive = [IO.Compression.ZipFile]::OpenRead($zipPath)
+try {
+    $unexpectedEntries = @($archive.Entries | Where-Object {
+        $normalized = $_.FullName.Replace('\', '/')
+        -not $normalized.StartsWith($packageName + '/', [StringComparison]::Ordinal)
+    })
+    if ($unexpectedEntries.Count -gt 0) {
+        throw "Release ZIP contains entries outside its single top-level folder: $($unexpectedEntries[0].FullName)"
+    }
+}
+finally {
+    $archive.Dispose()
+}
+
 $zipHash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash
+[IO.File]::WriteAllText(
+    $zipChecksumPath,
+    $zipHash + '  ' + [IO.Path]::GetFileName($zipPath) + [Environment]::NewLine,
+    (New-Object Text.UTF8Encoding($false)))
 Write-Host "PACKAGE=$packageRoot"
 Write-Host "ZIP=$zipPath"
+Write-Host "ZIP_CHECKSUM=$zipChecksumPath"
 Write-Host "ZIP_SHA256=$zipHash"
 Write-Host "FILES=$((Get-ChildItem -LiteralPath $packageRoot -Recurse -File -Force).Count)"

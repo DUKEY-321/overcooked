@@ -18,13 +18,13 @@ namespace OC2DIYChefTrailColor
     {
         public const string PluginGuid = "local.oc2.diycheftrailcolor";
         public const string PluginName = "OC2 DIY Chef Trail Color by DUKEY";
-        public const string PluginVersion = "0.2.1";
+        public const string PluginVersion = "0.2.2";
 
         private const string HostTypeName = "HostUtilities.GameplayDashSmokeColour";
-        private const string YierHeadName = "Chef_174-yier";
-        private const string YierStableKey = "diy:174:Chef_174-yier";
-        private const string YierLegacySection = "Character.174-yier";
-        private const byte YierId = 174;
+        private const string SignHeadName = "Chef_Sign";
+        private const string SignStableKey = "diy:174:Chef_Sign";
+        private const string SignConfigSection = "Character.Sign";
+        private const byte SignId = 174;
         private const float RefreshDelaySeconds = 0.05f;
 
         private static TrailColorPlugin instance;
@@ -66,13 +66,13 @@ namespace OC2DIYChefTrailColor
             Config.SaveOnConfigSet = false;
 
             RegisterProfile(
-                YierStableKey,
-                "174-yier",
-                "一二 / Yier",
-                YierHeadName,
+                SignStableKey,
+                "Sign",
+                "一二 / Sign",
+                SignHeadName,
                 true,
-                YierId,
-                YierLegacySection,
+                SignId,
+                SignConfigSection,
                 true,
                 new Color(1f, 176f / 255f, 208f / 255f, 1f),
                 new Color(1f, 79f / 255f, 163f / 255f, 1f),
@@ -166,7 +166,7 @@ namespace OC2DIYChefTrailColor
 
         private static int GetSortGroup(TrailColorProfile profile)
         {
-            if (profile.StableKey == YierStableKey)
+            if (profile.StableKey == SignStableKey)
             {
                 return 0;
             }
@@ -282,7 +282,7 @@ namespace OC2DIYChefTrailColor
                     ? resourceName
                     : "Chef_" + resourceName;
 
-                if (id == YierId && headName == YierHeadName)
+                if (id == SignId && headName == SignHeadName)
                 {
                     continue;
                 }

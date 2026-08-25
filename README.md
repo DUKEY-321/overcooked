@@ -1,32 +1,38 @@
-# Overcooked! 2 DIY Chef 工作区
+# Overcooked! 2 Sign DIY Chef 特别版
 
 作者：**DUKEY**
 
-![一二在 Overcooked! 2 中的实机效果](docs/images/yier-in-game.png)
+![Sign 在 Overcooked! 2 中的实机效果](docs/images/yier-in-game.png)
 
-这个仓库用于制作“一二”和“布布”的 `OC2DIYChef` 资源。目前正式安装包版本为
-v1.0.0，使用一二模型基线 v004：角色 ID 为 `174`，默认帽子为 `YierCap`，并包含
-角色专属走路/冲刺尾气颜色 GUI 与可选的 OC2DIYLevel 0.9.0 异步加载兼容插件。
+当前分支 `special/sign` 是一二模型的 Sign 特别版，安装包版本为 v1.0.1。运行时资源
+目录和 `prefer.txt` 名称均为 `Sign`，不带 `174-` 前缀；协议 ID 仍由 `INFO` 中的
+`ID=174` 提供。默认不戴帽子，可选专属帽为 `SignCap`，并包含角色专属走路/冲刺
+尾气颜色 GUI 与可选的 OC2DIYLevel 0.9.0 异步加载兼容插件。
+
+原始模型标题、素材署名和既有 Blender 源文件路径中的 `yier` 保留不改，用于维持
+来源记录和历史恢复点；它们不会成为游戏内名称。
 
 ## 下载与安装
 
 请从 [GitHub Releases](https://github.com/DUKEY-321/overcooked/releases)
-下载最新的 `Yier-OC2DIYChef-*.zip`，完整解压后关闭游戏。把解压目录内的全部文件
-复制到含有 `Overcooked2.exe` 的游戏主目录，然后双击：
+下载 `Sign-OC2DIYChef-Special-*.zip`，关闭游戏并把 ZIP 直接解压到含有
+`Overcooked2.exe` 的游戏主目录。解压后只会新增一个版本文件夹；进入该文件夹双击：
 
 ```text
-Install-Yier.bat
+Install-Sign.bat
 ```
 
-批处理会确认当前目录就是 Overcooked! 2 主目录，再调用安装器。也可以手动运行：
+不要把版本文件夹里的 BAT、PS1 或 `payload` 拆散复制到游戏主目录。批处理会确认其
+所在文件夹的上一级就是 Overcooked! 2 主目录，再调用安装器。也可以在版本文件夹内
+手动运行：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Yier.ps1 `
-  -GameDir 'D:\SteamLibrary\steamapps\common\Overcooked! 2'
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Sign.ps1 `
+  -GameDir '..'
 ```
 
 正式包面向 Windows Steam 标准版（x86），内含 BepInEx 5.4.22 x86、固定版本的
-OC2DIYChef、一二角色、`YierCap`、尾气插件和异步关卡兼容插件。HostUtilities 1.8.0
+OC2DIYChef、`Sign` 角色、可选 `SignCap`、尾气插件和异步关卡兼容插件。HostUtilities 1.8.0
 因上游未提供可再分发许可证，不直接放进公开 Release；安装器检测到缺失时会从上游
 官方地址下载并校验 SHA-256，网络失败时还会依次尝试本机 `12334`、`7890` 代理端口。
 若不需要尾气功能，可添加 `-SkipTrailColor`，角色和帽子仍可正常安装。
@@ -35,7 +41,8 @@ OC2DIYChef、一二角色、`YierCap`、尾气插件和异步关卡兼容插件�
 `OC2DIYLevel.dll` 精确匹配已验证的 0.9.0 版本时才会启用它。
 
 安装器会备份已有 `prefer.txt` 和所有将被替换的文件，不会覆盖其他厨师的帽子配置。
-安装后 `prefer.txt` 中只保留一条 `174-yier HAT=YierCap`。F10 打开尾气颜色 GUI。
+安装后 `prefer.txt` 中只保留一条 `Sign HAT=None`，所以 Sign 默认无帽。如需启用
+专属帽，将其改为 `Sign HAT=SignCap` 并重启游戏。F10 打开尾气颜色 GUI。
 
 Steam Crossplay Beta/Epic x64 版本尚未验证。
 
@@ -52,7 +59,7 @@ exports/Resources/      通过检查后，待复制到 OC2DIYChef/Resources 的�
 templates/              INFO 与资源目录清单模板
 LICENSES/               来源、许可和署名记录
 scripts/                只读资源校验脚本
-packaging/yier/         一二 Release 的安装器、说明和默认配置
+packaging/sign/         Sign 特别版安装器、说明和默认配置
 mods/                    尾气颜色与异步关卡兼容插件源码
 tools/                  本机 Blender 便携环境与官方校验文件（运行时不提交）
 ```
@@ -63,9 +70,9 @@ tools/                  本机 Blender 便携环境与官方校验文件（运�
 2. 人工收集的正/侧/背面参考图、网页链接和来源清单放进 `characters/<角色>/references/`，不要在这里重复存模型下载包。
 3. `blender/` 只放自动化脚本。共同导入留档为 `characters/yier/source/yier_prototype.blend`；按角色分离后的里程碑使用 `characters/<角色>/source/<角色>_work-vNNN.blend`。一二当前产出基线为 `yier_work-v004.blend`，布布仍冻结在 `bubu_work-v002.blend`；旧版本保留为恢复点。
 4. 烘焙前的 PSD/KRA/源贴图放在 `characters/<角色>/textures/`。
-5. Blender 导出的 OBJ、PNG、材质 TXT 和 `INFO` 只放在 `exports/Resources/<资源包名>/`；自定义帽放在 `exports/Resources/HATS/<帽名>/`。名称应稳定且只使用 ASCII，例如 `174-yier` 和 `YierCap`。
+5. Blender 导出的 OBJ、PNG、材质 TXT 和 `INFO` 只放在 `exports/Resources/<资源包名>/`；自定义帽放在 `exports/Resources/HATS/<帽名>/`。本分支使用 `Sign` 和 `SignCap`，协议 ID 单独保存在 `Sign/INFO`。
 6. ID 必须先和已安装资源检查冲突，再写入 `INFO`。`0..63` 为 AYCE 保留，建议从 `64..254` 中选择未占用值。
-7. 只有严格校验通过的资源包才进入 Release；`Install-Yier.bat` 只负责检查游戏目录并调用 `Install-Yier.ps1`，实际写入前安装器会备份受影响文件。
+7. 只有严格校验通过的资源包才进入 Release；`Install-Sign.bat` 只负责检查游戏目录并调用 `Install-Sign.ps1`，实际写入前安装器会备份受影响文件。
 
 不要修改 `assets/source_*` 中的下载原件。初始化脚本会把源模型导入 `.blend`；在 `.blend` 内保留一个未经减面、拆件的原始 Collection，再复制出工作 Collection，便于回滚。下载压缩包默认被 Git 忽略，需另行备份并在来源清单记录 SHA-256。
 
@@ -89,13 +96,13 @@ m_Head.txt
 一二 v004 的蓝帽使用插件要求的独立结构：
 
 ```text
-HATS/YierCap/
-  YierCap.obj
-  t_YierCap.png
-  m_YierCap.txt
+HATS/SignCap/
+  SignCap.obj
+  t_SignCap.png
+  m_SignCap.txt
 ```
 
-插件 1.2 只通过 `prefer.txt` 固定角色帽子，不提供独立帽子选择界面。一二发布包默认使用 `174-yier HAT=YierCap`；同一角色不能同时保留两行。
+插件 1.2 只通过 `prefer.txt` 固定角色帽子，不提供独立帽子选择界面。Sign 特别版默认使用 `Sign HAT=None`；如需戴帽，改为 `Sign HAT=SignCap`。同一角色不能同时保留两行。
 
 ## 校验
 
@@ -117,14 +124,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-OC2DIYChefRes
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-OC2DIYChefResource.ps1 `
-  -Path '.\exports\Resources\174-yier' -RequirePackages
+  -Path '.\exports\Resources\Sign' -RequirePackages
 ```
 
 自定义帽使用单独的严格校验器：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-OC2DIYChefHat.ps1 `
-  -Path '.\exports\Resources\HATS\YierCap' -RequireHats
+  -Path '.\exports\Resources\HATS\SignCap' -RequireHats
 ```
 
 校验器只读文件并返回退出码：`0` 表示无错误，`1` 表示存在错误。默认空工程是合法初始化状态；加 `-RequirePackages` 后，未发现资源包会报错。

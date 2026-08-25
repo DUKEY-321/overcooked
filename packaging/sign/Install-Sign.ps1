@@ -239,7 +239,7 @@ function Invoke-DownloadWithFallback {
     throw "All download attempts failed. $($errors -join ' | ')"
 }
 
-function Write-YierPreference {
+function Write-SignPreference {
     param([string]$PreferPath, [string]$OfficialListPath)
 
     $utf8NoBom = New-Object Text.UTF8Encoding($false)
@@ -248,13 +248,13 @@ function Write-YierPreference {
 
     if (Test-Path -LiteralPath $PreferPath -PathType Leaf) {
         foreach ($line in [IO.File]::ReadAllLines($PreferPath)) {
-            if ($line -match '^\s*174-yier(?:\s|$)') { continue }
+            if ($line -match '^\s*(?:Sign|174-yier)(?:\s|$)') { continue }
             if ($line -match '^\s*LOBBYSWITCHCHEF=') {
                 if (-not $hasLobbySwitch) {
                     while ($result.Count -gt 0 -and [string]::IsNullOrWhiteSpace($result[$result.Count - 1])) {
                         $result.RemoveAt($result.Count - 1)
                     }
-                    $result.Add('174-yier HAT=YierCap')
+                    $result.Add('Sign HAT=None')
                     $result.Add('')
                     $result.Add($line)
                     $hasLobbySwitch = $true
@@ -276,7 +276,7 @@ function Write-YierPreference {
         while ($result.Count -gt 0 -and [string]::IsNullOrWhiteSpace($result[$result.Count - 1])) {
             $result.RemoveAt($result.Count - 1)
         }
-        $result.Add('174-yier HAT=YierCap')
+        $result.Add('Sign HAT=None')
         $result.Add('')
         $result.Add('LOBBYSWITCHCHEF=TRUE')
     }
@@ -317,7 +317,7 @@ function Ensure-HostUtilities {
     try {
         $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\', '/')
         $downloadRoot = [IO.Path]::GetFullPath(
-            (Join-Path $tempRoot ('YierPackage-' + [Guid]::NewGuid().ToString('N'))))
+            (Join-Path $tempRoot ('SignPackage-' + [Guid]::NewGuid().ToString('N'))))
         if (-not $downloadRoot.StartsWith($tempRoot + '\', [StringComparison]::OrdinalIgnoreCase)) {
             throw "Temporary download path escaped the temp directory: $downloadRoot"
         }
@@ -349,7 +349,7 @@ function Ensure-HostUtilities {
         return $true
     }
     catch {
-        Write-Warning ("HostUtilities installation failed; Yier will still work, but trail colours were skipped. " + $_.Exception.Message)
+        Write-Warning ("HostUtilities installation failed; Sign will still work, but trail colours were skipped. " + $_.Exception.Message)
         return $false
     }
     finally {
@@ -431,8 +431,8 @@ foreach ($required in @(
     'BepInEx-x86',
     'OC2DIYChef\OC2DIYChef.dll',
     'OC2DIYChef\official-all.txt',
-    'Resources\174-yier',
-    'Resources\HATS\YierCap',
+    'Resources\Sign',
+    'Resources\HATS\SignCap',
     'TrailColor\OC2DIYChefTrailColor.dll',
     'TrailColor\OC2DIYChefTrailColorGUI.dll',
     'OC2DIYLevelAsyncLoader\OC2DIYLevelAsyncLoader.dll',
@@ -456,8 +456,8 @@ if (Get-Process -Name 'Overcooked2' -ErrorAction SilentlyContinue) {
     throw 'Overcooked! 2 is running. Close the game and run the installer again.'
 }
 
-$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$backupRoot = Assert-UnderRoot -Path (Join-Path $gameRoot "BepInEx\YierPackageBackups\$timestamp") -Root $gameRoot -Label 'Backup root'
+$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
+$backupRoot = Assert-UnderRoot -Path (Join-Path $gameRoot "BepInEx\SignPackageBackups\$timestamp") -Root $gameRoot -Label 'Backup root'
 
 $bepInExDll = Join-Path $gameRoot 'BepInEx\core\BepInEx.dll'
 if (-not (Test-Path -LiteralPath $bepInExDll -PathType Leaf)) {
@@ -495,7 +495,10 @@ New-Item -ItemType Directory -Path $hatsRoot -Force | Out-Null
 foreach ($path in @(
     (Join-Path $diyRoot 'OC2DIYChef.dll'),
     (Join-Path $diyRoot 'official-all.txt'),
+    (Join-Path $resourcesRoot 'Sign'),
     (Join-Path $resourcesRoot '174-yier'),
+    (Join-Path $hatsRoot 'SignCap'),
+    (Join-Path $hatsRoot 'YierCup'),
     (Join-Path $hatsRoot 'YierCap'),
     (Join-Path $hatsRoot 'YierBlueCap')
 )) {
@@ -504,8 +507,8 @@ foreach ($path in @(
 
 Copy-Item -LiteralPath (Join-Path $payloadRoot 'OC2DIYChef\OC2DIYChef.dll') -Destination (Join-Path $diyRoot 'OC2DIYChef.dll') -Force
 Copy-Item -LiteralPath (Join-Path $payloadRoot 'OC2DIYChef\official-all.txt') -Destination (Join-Path $diyRoot 'official-all.txt') -Force
-Copy-DirectoryContents -Source (Join-Path $payloadRoot 'Resources\174-yier') -Destination (Join-Path $resourcesRoot '174-yier')
-Copy-DirectoryContents -Source (Join-Path $payloadRoot 'Resources\HATS\YierCap') -Destination (Join-Path $hatsRoot 'YierCap')
+Copy-DirectoryContents -Source (Join-Path $payloadRoot 'Resources\Sign') -Destination (Join-Path $resourcesRoot 'Sign')
+Copy-DirectoryContents -Source (Join-Path $payloadRoot 'Resources\HATS\SignCap') -Destination (Join-Path $hatsRoot 'SignCap')
 
 $preferPath = Join-Path $diyRoot 'prefer.txt'
 if (Test-Path -LiteralPath $preferPath -PathType Leaf) {
@@ -513,7 +516,7 @@ if (Test-Path -LiteralPath $preferPath -PathType Leaf) {
     New-Item -ItemType Directory -Path (Split-Path -Parent $preferBackup) -Force | Out-Null
     Copy-Item -LiteralPath $preferPath -Destination $preferBackup
 }
-Write-YierPreference -PreferPath $preferPath -OfficialListPath (Join-Path $diyRoot 'official-all.txt')
+Write-SignPreference -PreferPath $preferPath -OfficialListPath (Join-Path $diyRoot 'official-all.txt')
 
 $trailInstalled = $false
 if (-not $SkipTrailColor) {
@@ -537,24 +540,26 @@ $asyncLevelInstalled = Install-AsyncLevelLoader `
     -BackupRoot $backupRoot
 
 $receipt = @(
-    "Package=Yier-OC2DIYChef-v$packageVersion",
+    "Package=Sign-OC2DIYChef-Special-v$packageVersion",
     'Author=DUKEY',
     "InstalledAt=$([DateTime]::Now.ToString('o'))",
     "GameDir=$gameRoot",
     "BackupDir=$backupRoot",
     "TrailColorInstalled=$trailInstalled",
     "AsyncLevelLoaderInstalled=$asyncLevelInstalled",
-    'Hat=YierCap'
+    'DefaultHat=None',
+    'OptionalHat=SignCap'
 )
 [IO.File]::WriteAllLines((Join-Path $backupRoot 'INSTALL-RECEIPT.txt'), $receipt, (New-Object Text.UTF8Encoding($false)))
 
 Write-Host ''
-Write-Host 'Yier installation completed.' -ForegroundColor Green
+Write-Host 'Sign special installation completed.' -ForegroundColor Green
 Write-Host "Package: v$packageVersion"
 Write-Host 'Author: DUKEY'
 Write-Host "Game: $gameRoot"
 Write-Host "Backup: $backupRoot"
-Write-Host 'Preference: 174-yier HAT=YierCap'
+Write-Host 'Preference: Sign HAT=None'
+Write-Host 'Optional hat installed: SignCap (set HAT=SignCap in prefer.txt to enable)'
 if ($trailInstalled) { Write-Host 'Trail colour GUI: installed (press F10 in game)' }
 elseif ($SkipTrailColor) { Write-Host 'Trail colour GUI: skipped by request' }
 else { Write-Host 'Trail colour GUI: not installed; see warnings above' }

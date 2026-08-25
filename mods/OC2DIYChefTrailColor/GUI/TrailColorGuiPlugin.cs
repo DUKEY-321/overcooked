@@ -15,7 +15,7 @@ namespace OC2DIYChefTrailColorGUI
     {
         public const string PluginGuid = "local.oc2.diycheftrailcolorgui";
         public const string PluginName = "OC2 DIY Chef Trail Color GUI by DUKEY";
-        public const string PluginVersion = "0.2.1";
+        public const string PluginVersion = "0.2.2";
 
         private const int WindowId = 17425;
         private const int PaletteTextureSize = 128;

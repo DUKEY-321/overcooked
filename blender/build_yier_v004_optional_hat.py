@@ -18,10 +18,10 @@ from mathutils import Vector
 PROJECT_ROOT = Path(r"F:\dev\overcooke")
 INPUT_BLEND = PROJECT_ROOT / "characters" / "yier" / "source" / "yier_work-v003.blend"
 OUTPUT_BLEND = PROJECT_ROOT / "characters" / "yier" / "source" / "yier_work-v004.blend"
-SOURCE_PACKAGE = PROJECT_ROOT / "exports" / "Resources" / "174-yier"
-STAGING_ROOT = PROJECT_ROOT / "exports" / "staging" / "yier-v004" / "Resources"
-STAGING_CHARACTER = STAGING_ROOT / "174-yier"
-HAT_NAME = "YierCap"
+SOURCE_PACKAGE = PROJECT_ROOT / "exports" / "Resources" / "Sign"
+STAGING_ROOT = PROJECT_ROOT / "exports" / "staging" / "sign-v004" / "Resources"
+STAGING_CHARACTER = STAGING_ROOT / "Sign"
+HAT_NAME = "SignCap"
 STAGING_HAT = STAGING_ROOT / "HATS" / HAT_NAME
 
 EXPORT_NAMES = (
@@ -270,9 +270,9 @@ def main() -> None:
     optional_hat_collection["hat_template_offset_blender"] = tuple(HAT_TEMPLATE_OFFSET)
     hat_root_collection["purpose"] = "Blender preview and root-space placement reference only; do not export to HATS"
     bpy.context.scene["workspace_revision"] = "v004-default-hatless-optional-cap"
-    bpy.context.scene["active_character"] = "yier"
-    bpy.context.scene["prefer_default"] = "174-yier HAT=None"
-    bpy.context.scene["prefer_optional_hat"] = f"174-yier HAT={HAT_NAME}"
+    bpy.context.scene["active_character"] = "Sign"
+    bpy.context.scene["prefer_default"] = "Sign HAT=None"
+    bpy.context.scene["prefer_optional_hat"] = f"Sign HAT={HAT_NAME}"
     readme = bpy.data.texts.get("README_YIER_BUBU_WORK.txt")
     if readme is not None:
         readme.write(
