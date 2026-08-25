@@ -1,4 +1,6 @@
-# 一二 / Yier OC2DIYChef v0.4.1-test
+# 一二 / Yier OC2DIYChef v0.4.2-test
+
+作者：**DUKEY**
 
 这是供其他电脑验证的一二非商业测试包。默认角色 ID 为 `174`，帽子固定为
 `YierCap`。包内安装器会保留其他角色的 `prefer.txt` 配置，并在修改前创建备份。
@@ -8,7 +10,7 @@
 - Windows Steam 标准版 Overcooked! 2（x86）
 - BepInEx 5.4.22 x86（包内包含官方原版）
 - OC2DIYChef v1.2，固定上游提交 `93ab0554`（包内包含）
-- 可选尾气 GUI：`OC2DIYChefTrailColor` 0.2.0，F10 打开
+- 可选尾气 GUI：`OC2DIYChefTrailColor` 0.2.1，F10 打开
 
 Steam Crossplay Beta/Epic x64 版本尚未验证，不能使用本包内的 x86 BepInEx。
 

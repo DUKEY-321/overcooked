@@ -317,7 +317,8 @@ if (-not $SkipTrailColor) {
 }
 
 $receipt = @(
-    'Package=Yier-OC2DIYChef-v0.4.1-test',
+    'Package=Yier-OC2DIYChef-v0.4.2-test',
+    'Author=DUKEY',
     "InstalledAt=$([DateTime]::Now.ToString('o'))",
     "GameDir=$gameRoot",
     "BackupDir=$backupRoot",
@@ -328,6 +329,7 @@ $receipt = @(
 
 Write-Host ''
 Write-Host 'Yier installation completed.' -ForegroundColor Green
+Write-Host 'Author: DUKEY'
 Write-Host "Game: $gameRoot"
 Write-Host "Backup: $backupRoot"
 Write-Host 'Preference: 174-yier HAT=YierCap'

@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$Version = '0.4.1-test',
+    [string]$Version = '0.4.2-test',
     [string]$DistDir,
     [switch]$Force
 )

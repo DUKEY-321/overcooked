@@ -17,8 +17,8 @@ namespace OC2DIYChefTrailColor
     public sealed class TrailColorPlugin : BaseUnityPlugin
     {
         public const string PluginGuid = "local.oc2.diycheftrailcolor";
-        public const string PluginName = "OC2 DIY Chef Trail Color";
-        public const string PluginVersion = "0.2.0";
+        public const string PluginName = "OC2 DIY Chef Trail Color by DUKEY";
+        public const string PluginVersion = "0.2.1";
 
         private const string HostTypeName = "HostUtilities.GameplayDashSmokeColour";
         private const string YierHeadName = "Chef_174-yier";

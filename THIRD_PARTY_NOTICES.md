@@ -1,5 +1,14 @@
 # Third-party notices
 
+## Mod author
+
+**Author: DUKEY**
+
+The original installer, OC2DIYChef adaptation work, packaging scripts and
+`OC2DIYChefTrailColor` plugins in this project are produced and maintained by
+DUKEY. Third-party models and dependencies remain credited to their respective
+authors below.
+
 ## 一二 / Yier model
 
 The released Yier meshes, textures and `YierCap` are adapted from the

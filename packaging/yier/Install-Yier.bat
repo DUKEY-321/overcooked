@@ -9,6 +9,7 @@ set "EXIT_CODE=0"
 
 echo ========================================
 echo   Yier OC2DIYChef One-Click Installer
+echo   Author: DUKEY
 echo ========================================
 echo.
 

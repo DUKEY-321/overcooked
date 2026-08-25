@@ -14,8 +14,8 @@ namespace OC2DIYChefTrailColorGUI
     public sealed class TrailColorGuiPlugin : BaseUnityPlugin
     {
         public const string PluginGuid = "local.oc2.diycheftrailcolorgui";
-        public const string PluginName = "OC2 DIY Chef Trail Color GUI";
-        public const string PluginVersion = "0.2.0";
+        public const string PluginName = "OC2 DIY Chef Trail Color GUI by DUKEY";
+        public const string PluginVersion = "0.2.1";
 
         private const int WindowId = 17425;
         private const int PaletteTextureSize = 128;
@@ -98,7 +98,7 @@ namespace OC2DIYChefTrailColorGUI
             }
 
             ClampWindowToScreen();
-            windowRect = GUI.Window(WindowId, windowRect, DrawWindow, "OC2 DIY Chef Trail Color");
+            windowRect = GUI.Window(WindowId, windowRect, DrawWindow, "OC2 DIY Chef Trail Color - by DUKEY");
         }
 
         private void OnDestroy()

@@ -28,11 +28,11 @@
 ## 本项目中的修改
 
 - 已完成修改：网格清理与拆件、OC2DIYChef 身体/手型/眨眼适配、UV 与贴图调整、比例与原点对齐、将蓝帽拆分并发布为 `YierCap`
-- 修改者：本地项目制作者
+- MOD 修改者：DUKEY
 - 修改日期：从 2026-08-25 开始，发布前补充最终变更清单
 
 ## 发布时使用的署名文字
 
-> “表情包的一二布布Yier”模型由 Sketchfab 用户小王子（hong2695429209）发布，原始页面：https://sketchfab.com/3d-models/yier-b15f13be61224129ba3123c0041206c2 ，依据 CC BY 4.0 使用。本 MOD 对模型进行了减面/重拓扑、部件拆分、UV/贴图及适配 Overcooked! 2 的修改。许可：https://creativecommons.org/licenses/by/4.0/
+> “表情包的一二布布Yier”模型由 Sketchfab 用户小王子（hong2695429209）发布，原始页面：https://sketchfab.com/3d-models/yier-b15f13be61224129ba3123c0041206c2 ，依据 CC BY 4.0 使用。本 MOD 作者为 DUKEY，并对模型进行了减面/重拓扑、部件拆分、UV/贴图及适配 Overcooked! 2 的修改。许可：https://creativecommons.org/licenses/by/4.0/
 
 状态：`PUBLIC_NONCOMMERCIAL_TEST_RELEASE`。使用者于 2026-08-25 要求上传到公开 GitHub，并供其他电脑进行本地单机测试。模型文件的 CC BY 4.0 已核对并保留署名；角色形象的底层授权仍为 `PENDING`，本仓库不会把该不确定项描述为已获授权。
