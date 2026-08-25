@@ -1,4 +1,4 @@
-# 一二 / Yier OC2DIYChef v0.4.0-test
+# 一二 / Yier OC2DIYChef v0.4.1-test
 
 这是供其他电脑验证的一二非商业测试包。默认角色 ID 为 `174`，帽子固定为
 `YierCap`。包内安装器会保留其他角色的 `prefer.txt` 配置，并在修改前创建备份。
@@ -16,7 +16,22 @@ Steam Crossplay Beta/Epic x64 版本尚未验证，不能使用本包内的 x86 
 
 1. 完整解压 ZIP，不要直接在压缩包内运行脚本。
 2. 关闭 Overcooked! 2。
-3. 在 PowerShell 中运行：
+3. 把解压目录内的全部文件复制到游戏主目录，也就是含有
+   `Overcooked2.exe` 的目录。
+4. 双击 `Install-Yier.bat`。批处理会确认当前目录中的游戏程序，再自动安装一二、
+   `YierCap` 和尾气颜色 GUI。
+
+目录结构示例：
+
+```text
+Overcooked! 2/
+├─ Overcooked2.exe
+├─ Install-Yier.bat
+├─ Install-Yier.ps1
+└─ payload/
+```
+
+也可以不用批处理，直接在 PowerShell 中运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Yier.ps1 `
@@ -31,7 +46,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Yier.ps1 `
   -SkipTrailColor
 ```
 
-未提供 `-GameDir` 时，安装器会检查常见 Steam 目录；找到多个候选时会要求显式指定。
+`Install-Yier.bat` 默认只接受当前目录或批处理自身所在目录，不会扫描整台电脑，避免
+装错游戏副本。直接运行 PowerShell 安装器且未提供 `-GameDir` 时，安装器才会检查
+常见 Steam 目录；找到多个候选时会要求显式指定。
 
 尾气插件依赖 HostUtilities 1.8.0。该依赖没有随 ZIP 再分发；安装器会从作者的
 官方 Release 下载 `HostUtilities.Core.zip`，核对固定 SHA-256 后安装。下载失败时，

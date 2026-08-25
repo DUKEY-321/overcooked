@@ -7,7 +7,14 @@ v004 非商业测试版：角色 ID 为 `174`，默认帽子为 `YierCap`，并�
 ## 下载与安装
 
 请从 [GitHub Releases](https://github.com/DUKEY-321/overcooked/releases)
-下载最新的 `Yier-OC2DIYChef-*.zip`，完整解压后关闭游戏，运行：
+下载最新的 `Yier-OC2DIYChef-*.zip`，完整解压后关闭游戏。把解压目录内的全部文件
+复制到含有 `Overcooked2.exe` 的游戏主目录，然后双击：
+
+```text
+Install-Yier.bat
+```
+
+批处理会确认当前目录就是 Overcooked! 2 主目录，再调用安装器。也可以手动运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Yier.ps1 `
@@ -49,7 +56,7 @@ tools/                  本机 Blender 便携环境与官方校验文件（运�
 4. 烘焙前的 PSD/KRA/源贴图放在 `characters/<角色>/textures/`。
 5. Blender 导出的 OBJ、PNG、材质 TXT 和 `INFO` 只放在 `exports/Resources/<资源包名>/`；自定义帽放在 `exports/Resources/HATS/<帽名>/`。名称应稳定且只使用 ASCII，例如 `174-yier` 和 `YierCap`。
 6. ID 必须先和已安装资源检查冲突，再写入 `INFO`。`0..63` 为 AYCE 保留，建议从 `64..254` 中选择未占用值。
-7. 只有严格校验通过的资源包才进入 Release；`Install-Yier.ps1` 是唯一会写入游戏目录的发布脚本，并会先备份受影响文件。
+7. 只有严格校验通过的资源包才进入 Release；`Install-Yier.bat` 只负责检查游戏目录并调用 `Install-Yier.ps1`，实际写入前安装器会备份受影响文件。
 
 不要修改 `assets/source_*` 中的下载原件。初始化脚本会把源模型导入 `.blend`；在 `.blend` 内保留一个未经减面、拆件的原始 Collection，再复制出工作 Collection，便于回滚。下载压缩包默认被 Git 忽略，需另行备份并在来源清单记录 SHA-256。
 

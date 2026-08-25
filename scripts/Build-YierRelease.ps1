@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$Version = '0.4.0-test',
+    [string]$Version = '0.4.1-test',
     [string]$DistDir,
     [switch]$Force
 )
@@ -102,6 +102,7 @@ foreach ($source in @(
 Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\default-trail-color.cfg') -Destination (Join-Path $packageRoot 'payload\default-trail-color.cfg')
 
 Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\README.md') -Destination (Join-Path $packageRoot 'README.md')
+Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\Install-Yier.bat') -Destination (Join-Path $packageRoot 'Install-Yier.bat')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\Install-Yier.ps1') -Destination (Join-Path $packageRoot 'Install-Yier.ps1')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination (Join-Path $packageRoot 'LICENSE')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'THIRD_PARTY_NOTICES.md') -Destination (Join-Path $packageRoot 'THIRD_PARTY_NOTICES.md')

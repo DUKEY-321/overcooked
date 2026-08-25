@@ -53,6 +53,55 @@ function Get-PeMachine {
     }
 }
 
+function Get-Sha256 {
+    param([string]$Path)
+
+    $stream = [IO.File]::Open($Path, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::Read)
+    $sha256 = [Security.Cryptography.SHA256]::Create()
+    try {
+        return [BitConverter]::ToString($sha256.ComputeHash($stream)).Replace('-', '')
+    }
+    finally {
+        $sha256.Dispose()
+        $stream.Dispose()
+    }
+}
+
+function Assert-CompatibleBepInEx {
+    param([string]$GameRoot)
+
+    $required = @(
+        'winhttp.dll',
+        'doorstop_config.ini',
+        'BepInEx\core\BepInEx.dll',
+        'BepInEx\core\BepInEx.Preloader.dll',
+        'BepInEx\core\0Harmony20.dll'
+    )
+    $missing = @($required | Where-Object {
+        -not (Test-Path -LiteralPath (Join-Path $GameRoot $_) -PathType Leaf)
+    })
+    if ($missing.Count -gt 0) {
+        throw "Existing BepInEx is incomplete. Missing: $($missing -join ', ')"
+    }
+
+    $bepInExDll = Join-Path $GameRoot 'BepInEx\core\BepInEx.dll'
+    try {
+        $version = [Reflection.AssemblyName]::GetAssemblyName($bepInExDll).Version
+    }
+    catch {
+        throw "Could not read the existing BepInEx version: $($_.Exception.Message)"
+    }
+    if ($version.Major -ne 5) {
+        throw "Existing BepInEx $version is incompatible. This package requires BepInEx 5.x x86."
+    }
+
+    $doorstopDll = Join-Path $GameRoot 'winhttp.dll'
+    if ((Get-PeMachine -ExecutablePath $doorstopDll) -ne 0x014c) {
+        throw 'Existing winhttp.dll is not x86. This package only supports the Steam standard x86 game build.'
+    }
+    return $version
+}
+
 function Assert-UnderRoot {
     param([string]$Path, [string]$Root, [string]$Label)
 
@@ -95,7 +144,7 @@ function Write-YierPreference {
 
     if (Test-Path -LiteralPath $PreferPath -PathType Leaf) {
         foreach ($line in [IO.File]::ReadAllLines($PreferPath)) {
-            if ($line -match '^\s*174-yier\s+HAT=') { continue }
+            if ($line -match '^\s*174-yier(?:\s|$)') { continue }
             if ($line -match '^\s*LOBBYSWITCHCHEF=') {
                 if (-not $hasLobbySwitch) {
                     $result.Add('174-yier HAT=YierCap')
@@ -136,14 +185,16 @@ function Ensure-HostUtilities {
     $expectedArchiveHash = 'E38A0589C35B726C7B3D5886163D3267E71534F0DB883FC66E6495AAEADF0220'
     $expectedDllHash = 'E9663293FCC8C4CFFAD75D4F78211406D12E1DC5ED12B9F7B88EBA4D0EE2B022'
     $existing = @(Get-ChildItem -LiteralPath $PluginsDirectory -Filter 'HostUtilities.dll' -Recurse -File -ErrorAction SilentlyContinue)
+    $matching = $null
     foreach ($candidate in $existing) {
-        if ((Get-FileHash -LiteralPath $candidate.FullName -Algorithm SHA256).Hash -eq $expectedDllHash) {
-            Write-Host "HostUtilities 1.8.0 already present: $($candidate.FullName)"
-            return $true
-        }
+        if ((Get-Sha256 -Path $candidate.FullName) -eq $expectedDllHash) { $matching = $candidate }
+    }
+    if ($existing.Count -eq 1 -and $null -ne $matching) {
+        Write-Host "HostUtilities 1.8.0 already present: $($matching.FullName)"
+        return $true
     }
     if ($existing.Count -gt 0) {
-        Write-Warning 'Another HostUtilities build is installed. Skipping trail-colour installation to avoid duplicate plugin GUIDs.'
+        Write-Warning 'Another or duplicate HostUtilities build is installed. Skipping trail-colour installation to avoid duplicate plugin GUIDs.'
         return $false
     }
 
@@ -152,15 +203,16 @@ function Ensure-HostUtilities {
         New-Item -ItemType Directory -Path $downloadRoot | Out-Null
         $archive = Join-Path $downloadRoot 'HostUtilities.Core.zip'
         $expanded = Join-Path $downloadRoot 'expanded'
-        Invoke-WebRequest -Uri 'https://github.com/CH3NGYZ/Overcooked-2-HostUtilities-Stable-Releases/releases/download/v1.8.0/HostUtilities.Core.zip' -OutFile $archive
-        $actualArchiveHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash
+        [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+        Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/CH3NGYZ/Overcooked-2-HostUtilities-Stable-Releases/releases/download/v1.8.0/HostUtilities.Core.zip' -OutFile $archive
+        $actualArchiveHash = Get-Sha256 -Path $archive
         if ($actualArchiveHash -ne $expectedArchiveHash) {
             throw "HostUtilities archive SHA-256 mismatch: $actualArchiveHash"
         }
         Expand-Archive -LiteralPath $archive -DestinationPath $expanded
         $dlls = @(Get-ChildItem -LiteralPath $expanded -Filter 'HostUtilities.dll' -Recurse -File)
         if ($dlls.Count -ne 1) { throw "Expected one HostUtilities.dll, found $($dlls.Count)" }
-        $actualDllHash = (Get-FileHash -LiteralPath $dlls[0].FullName -Algorithm SHA256).Hash
+        $actualDllHash = Get-Sha256 -Path $dlls[0].FullName
         if ($actualDllHash -ne $expectedDllHash) {
             throw "HostUtilities.dll SHA-256 mismatch: $actualDllHash"
         }
@@ -214,7 +266,8 @@ if (-not (Test-Path -LiteralPath $bepInExDll -PathType Leaf)) {
     Write-Host 'Installed BepInEx 5.4.22 x86.'
 }
 else {
-    Write-Host 'Existing BepInEx detected; core files were left unchanged.'
+    $bepInExVersion = Assert-CompatibleBepInEx -GameRoot $gameRoot
+    Write-Host "Compatible BepInEx $bepInExVersion x86 detected; core files were left unchanged."
 }
 
 $diyRoot = Join-Path $gameRoot 'BepInEx\plugins\OC2DIYChef'
@@ -264,7 +317,7 @@ if (-not $SkipTrailColor) {
 }
 
 $receipt = @(
-    'Package=Yier-OC2DIYChef-v0.4.0-test',
+    'Package=Yier-OC2DIYChef-v0.4.1-test',
     "InstalledAt=$([DateTime]::Now.ToString('o'))",
     "GameDir=$gameRoot",
     "BackupDir=$backupRoot",
