@@ -2,6 +2,8 @@
 
 作者：**DUKEY**
 
+![一二在 Overcooked! 2 中的实机效果](docs/images/yier-in-game.png)
+
 这个仓库用于制作“一二”和“布布”的 `OC2DIYChef` 资源。目前发布的是一二
 v004 非商业测试版：角色 ID 为 `174`，默认帽子为 `YierCap`，并可选安装
 角色专属走路/冲刺尾气颜色 GUI。
