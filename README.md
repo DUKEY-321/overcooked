@@ -4,9 +4,9 @@
 
 ![一二在 Overcooked! 2 中的实机效果](docs/images/yier-in-game.png)
 
-这个仓库用于制作“一二”和“布布”的 `OC2DIYChef` 资源。目前发布的是一二
-v004 非商业测试版：角色 ID 为 `174`，默认帽子为 `YierCap`，并可选安装
-角色专属走路/冲刺尾气颜色 GUI。
+这个仓库用于制作“一二”和“布布”的 `OC2DIYChef` 资源。目前正式安装包版本为
+v1.0.0，使用一二模型基线 v004：角色 ID 为 `174`，默认帽子为 `YierCap`，并包含
+角色专属走路/冲刺尾气颜色 GUI 与可选的 OC2DIYLevel 0.9.0 异步加载兼容插件。
 
 ## 下载与安装
 
@@ -25,10 +25,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Install-Yier.ps1 `
   -GameDir 'D:\SteamLibrary\steamapps\common\Overcooked! 2'
 ```
 
-测试包面向 Windows Steam 标准版（x86），内含 BepInEx 5.4.22 x86、固定版本的
-OC2DIYChef、一二角色、`YierCap` 和尾气插件。HostUtilities 1.8.0 因上游未提供
-可再分发许可证，不直接放进 Release；安装器会从上游官方地址下载并校验 SHA-256。
+正式包面向 Windows Steam 标准版（x86），内含 BepInEx 5.4.22 x86、固定版本的
+OC2DIYChef、一二角色、`YierCap`、尾气插件和异步关卡兼容插件。HostUtilities 1.8.0
+因上游未提供可再分发许可证，不直接放进公开 Release；安装器检测到缺失时会从上游
+官方地址下载并校验 SHA-256，网络失败时还会依次尝试本机 `12334`、`7890` 代理端口。
 若不需要尾气功能，可添加 `-SkipTrailColor`，角色和帽子仍可正常安装。
+
+异步兼容插件不会附带或修改 OC2DIYLevel 本体、地图或存档；安装器只有在现有
+`OC2DIYLevel.dll` 精确匹配已验证的 0.9.0 版本时才会启用它。
 
 安装器会备份已有 `prefer.txt` 和所有将被替换的文件，不会覆盖其他厨师的帽子配置。
 安装后 `prefer.txt` 中只保留一条 `174-yier HAT=YierCap`。F10 打开尾气颜色 GUI。
@@ -49,6 +53,7 @@ templates/              INFO 与资源目录清单模板
 LICENSES/               来源、许可和署名记录
 scripts/                只读资源校验脚本
 packaging/yier/         一二 Release 的安装器、说明和默认配置
+mods/                    尾气颜色与异步关卡兼容插件源码
 tools/                  本机 Blender 便携环境与官方校验文件（运行时不提交）
 ```
 

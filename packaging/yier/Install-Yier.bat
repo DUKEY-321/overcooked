@@ -3,7 +3,7 @@ setlocal EnableExtensions DisableDelayedExpansion
 title Yier OC2DIYChef Installer
 
 for %%I in ("%~dp0.") do set "INSTALLER_DIR=%%~fI"
-for %%I in ("%CD%\.") do set "GAME_DIR=%%~fI"
+set "GAME_DIR=%INSTALLER_DIR%"
 set "INSTALLER_PS1=%INSTALLER_DIR%\Install-Yier.ps1"
 set "EXIT_CODE=0"
 
@@ -21,9 +21,7 @@ if not exist "%INSTALLER_PS1%" (
     goto :finish
 )
 
-rem Prefer the launch directory, then try the batch file directory.
-if exist "%GAME_DIR%\Overcooked2.exe" goto :game_found
-set "GAME_DIR=%INSTALLER_DIR%"
+rem The complete package must be copied beside Overcooked2.exe.
 if exist "%GAME_DIR%\Overcooked2.exe" goto :game_found
 
 echo [ERROR] This is not the Overcooked! 2 game directory.
@@ -31,14 +29,13 @@ echo.
 echo Copy every extracted package file into the directory containing
 echo Overcooked2.exe, then double-click Install-Yier.bat.
 echo.
-echo Launch directory: "%CD%"
 echo Script directory: "%INSTALLER_DIR%"
 set "EXIT_CODE=3"
 goto :finish
 
 :game_found
 echo [GAME FOUND] "%GAME_DIR%"
-echo [INSTALLING] Yier model, YierCap, and Trail Color GUI
+echo [INSTALLING] Yier, YierCap, Trail Color GUI, and async level support
 echo.
 
 powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%INSTALLER_PS1%" -GameDir "%GAME_DIR%"
@@ -48,7 +45,8 @@ echo.
 if "%EXIT_CODE%"=="0" (
     echo [DONE] Yier installation finished.
     echo Select 174-yier in game. If the summary says the GUI was installed,
-    echo press F10 in game to open it.
+    echo press F10 in game to open it. Async level support is installed only
+    echo when a compatible OC2DIYLevel 0.9.0 is already present.
 ) else (
     echo [FAILED] Installer exit code: %EXIT_CODE%
     echo Review the error above. If the game is running, close it and retry.

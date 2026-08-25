@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.props" Condition="Exists('$(MSBuildToolsPath)\Microsoft.Common.props')" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B99D3C8A-6547-4C11-8B21-7A23B22CC843}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>OC2DIYLevelAsyncLoader</RootNamespace>
+    <AssemblyName>OC2DIYLevelAsyncLoader</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <LangVersion>5</LangVersion>
+    <Deterministic>true</Deterministic>
+    <OC2GameDir Condition=" '$(OC2GameDir)' == '' ">D:\SteamLibrary\steamapps\common\Overcooked! 2</OC2GameDir>
+    <OC2BepInExDir>$(OC2GameDir)\BepInEx</OC2BepInExDir>
+    <OC2DIYLevelDll Condition=" '$(OC2DIYLevelDll)' == '' And Exists('$(OC2BepInExDir)\plugins\OC2DIYLevel\OC2DIYLevel.dll') ">$(OC2BepInExDir)\plugins\OC2DIYLevel\OC2DIYLevel.dll</OC2DIYLevelDll>
+    <OC2DIYLevelDll Condition=" '$(OC2DIYLevelDll)' == '' And Exists('$(OC2BepInExDir)\DisabledPlugins\OC2DIYLevel-ABTest\OC2DIYLevel.dll') ">$(OC2BepInExDir)\DisabledPlugins\OC2DIYLevel-ABTest\OC2DIYLevel.dll</OC2DIYLevelDll>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(OC2BepInExDir)\core\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0Harmony20">
+      <HintPath>$(OC2BepInExDir)\core\0Harmony20.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(OC2GameDir)\Overcooked2_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="LevelEditorStub">
+      <HintPath>$(OC2BepInExDir)\plugins\OC2DIYLevel\LevelEditorStub.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OC2DIYLevel">
+      <HintPath>$(OC2DIYLevelDll)</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(OC2GameDir)\Overcooked2_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(OC2GameDir)\Overcooked2_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>$(OC2GameDir)\Overcooked2_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(OC2GameDir)\Overcooked2_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(OC2GameDir)\Overcooked2_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AsyncLevelLoaderPlugin.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

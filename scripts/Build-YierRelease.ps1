@@ -1,12 +1,16 @@
 [CmdletBinding()]
 param(
-    [string]$Version = '0.4.2-test',
+    [string]$Version = '1.0.0',
     [string]$DistDir,
     [switch]$Force
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+if ($Version -notmatch '^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$') {
+    throw "Invalid release version: $Version"
+}
 
 $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if ([string]::IsNullOrWhiteSpace($DistDir)) {
@@ -39,7 +43,39 @@ function Get-VerifiedDownload {
     param([string]$Uri, [string]$Path, [string]$ExpectedSha256)
 
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
-        Invoke-WebRequest -Uri $Uri -OutFile $Path
+        $attempts = @(
+            @{ Name = 'system/default network'; Proxy = $null },
+            @{ Name = 'local proxy 127.0.0.1:12334'; Proxy = 'http://127.0.0.1:12334' },
+            @{ Name = 'local proxy 127.0.0.1:7890'; Proxy = 'http://127.0.0.1:7890' }
+        )
+        $downloaded = $false
+        $errors = New-Object 'System.Collections.Generic.List[string]'
+        foreach ($attempt in $attempts) {
+            if (Test-Path -LiteralPath $Path) { Remove-Item -LiteralPath $Path -Force }
+            try {
+                Write-Host "Downloading with $($attempt.Name): $Uri"
+                $parameters = @{
+                    UseBasicParsing = $true
+                    Uri = $Uri
+                    OutFile = $Path
+                    TimeoutSec = 30
+                }
+                if ($null -ne $attempt.Proxy) { $parameters.Proxy = $attempt.Proxy }
+                Invoke-WebRequest @parameters
+                $attemptHash = (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
+                if ($attemptHash -ne $ExpectedSha256) {
+                    throw "Downloaded file SHA-256 mismatch: $attemptHash"
+                }
+                $downloaded = $true
+                break
+            }
+            catch {
+                $errors.Add("$($attempt.Name): $($_.Exception.Message)")
+            }
+        }
+        if (-not $downloaded) {
+            throw "All download attempts failed for $Uri. $($errors -join ' | ')"
+        }
     }
     $actual = (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
     if ($actual -ne $ExpectedSha256) {
@@ -99,13 +135,43 @@ foreach ($source in @(
     if (-not (Test-Path -LiteralPath $source -PathType Leaf)) { throw "Missing built trail plugin: $source" }
     Copy-Item -LiteralPath $source -Destination $trailPayload
 }
-Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\default-trail-color.cfg') -Destination (Join-Path $packageRoot 'payload\default-trail-color.cfg')
 
-Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\README.md') -Destination (Join-Path $packageRoot 'README.md')
+$asyncPayload = Join-Path $packageRoot 'payload\OC2DIYLevelAsyncLoader'
+New-Item -ItemType Directory -Path $asyncPayload -Force | Out-Null
+$asyncSource = Join-Path $projectRoot 'mods\OC2DIYLevelAsyncLoader\bin\Release\OC2DIYLevelAsyncLoader.dll'
+if (-not (Test-Path -LiteralPath $asyncSource -PathType Leaf)) {
+    throw "Missing built async level plugin: $asyncSource"
+}
+Copy-Item -LiteralPath $asyncSource -Destination $asyncPayload
+
+$configPayload = Join-Path $packageRoot 'payload\config'
+New-Item -ItemType Directory -Path $configPayload -Force | Out-Null
+Copy-Item `
+    -LiteralPath (Join-Path $projectRoot 'packaging\yier\default-trail-color.cfg') `
+    -Destination (Join-Path $configPayload 'local.oc2.diycheftrailcolor.cfg')
+Copy-Item `
+    -LiteralPath (Join-Path $projectRoot 'packaging\yier\default-async-level-loader.cfg') `
+    -Destination (Join-Path $configPayload 'dukey.oc2.diylevel.asyncloader.cfg')
+
+$utf8NoBom = New-Object Text.UTF8Encoding($false)
+$readmeTemplate = [IO.File]::ReadAllText((Join-Path $projectRoot 'packaging\yier\README.md'))
+$readme = $readmeTemplate.Replace('{{VERSION}}', $Version)
+[IO.File]::WriteAllText((Join-Path $packageRoot 'README.md'), $readme, $utf8NoBom)
+[IO.File]::WriteAllText((Join-Path $packageRoot 'PACKAGE-VERSION.txt'), $Version + [Environment]::NewLine, $utf8NoBom)
 Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\Install-Yier.bat') -Destination (Join-Path $packageRoot 'Install-Yier.bat')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'packaging\yier\Install-Yier.ps1') -Destination (Join-Path $packageRoot 'Install-Yier.ps1')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSE') -Destination (Join-Path $packageRoot 'LICENSE')
 Copy-Item -LiteralPath (Join-Path $projectRoot 'THIRD_PARTY_NOTICES.md') -Destination (Join-Path $packageRoot 'THIRD_PARTY_NOTICES.md')
+
+$imagesRoot = Join-Path $packageRoot 'images'
+New-Item -ItemType Directory -Path $imagesRoot -Force | Out-Null
+Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\images\yier-in-game.png') -Destination $imagesRoot
+
+$docsRoot = Join-Path $packageRoot 'docs'
+New-Item -ItemType Directory -Path $docsRoot -Force | Out-Null
+Copy-Item `
+    -LiteralPath (Join-Path $projectRoot 'mods\OC2DIYLevelAsyncLoader\README.md') `
+    -Destination (Join-Path $docsRoot 'OC2DIYLevelAsyncLoader.md')
 
 $licensesRoot = Join-Path $packageRoot 'licenses'
 New-Item -ItemType Directory -Path $licensesRoot -Force | Out-Null
@@ -115,7 +181,7 @@ Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSES\yier-sketchfab-b15f13be
 Copy-Item -LiteralPath (Join-Path $projectRoot 'LICENSES\DISTRIBUTION_NOTICE.md') -Destination (Join-Path $licensesRoot 'DISTRIBUTION_NOTICE.md')
 
 $sumLines = New-Object 'System.Collections.Generic.List[string]'
-foreach ($file in Get-ChildItem -LiteralPath $packageRoot -Recurse -File | Sort-Object FullName) {
+foreach ($file in Get-ChildItem -LiteralPath $packageRoot -Recurse -File -Force | Sort-Object FullName) {
     if ($file.Name -eq 'SHA256SUMS.txt') { continue }
     $relative = $file.FullName.Substring($packageRoot.Length + 1).Replace('\', '/')
     $hash = (Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash
@@ -128,4 +194,4 @@ $zipHash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash
 Write-Host "PACKAGE=$packageRoot"
 Write-Host "ZIP=$zipPath"
 Write-Host "ZIP_SHA256=$zipHash"
-Write-Host "FILES=$((Get-ChildItem -LiteralPath $packageRoot -Recurse -File).Count)"
+Write-Host "FILES=$((Get-ChildItem -LiteralPath $packageRoot -Recurse -File -Force).Count)"
