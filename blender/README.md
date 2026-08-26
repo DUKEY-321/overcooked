@@ -37,7 +37,7 @@
 共同 GLB 已确认同时包含一二和布布。当前里程碑为：
 
 - `F:\dev\overcooke\characters\yier\source\yier_work-v004.blend`（一二默认无帽与可选蓝帽）
-- `F:\dev\overcooke\characters\bubu\source\bubu_work-v002.blend`
+- `F:\dev\overcooke\characters\bubu\source\bubu_work-v003.blend`（布布首个完整游戏资源）
 
 `v001` 是分离、对齐后的恢复点；`v002` 是拆件前恢复点；`v003` 是蓝帽仍合并在 Head 的完整首版。一二 `v004` 已将蓝帽转换到官方 HatBase 局部坐标并输出独立 HATS 资源。不要直接在共同导入留档 `yier_prototype.blend` 上做部件拆分。
 
@@ -60,6 +60,29 @@
 ```
 
 把 `YIER` 和文件名替换为 `BUBU` / `bubu_work-v002.blend` 即可验收布布。验收脚本只读，不保存场景。
+
+布布 v003 由 v002 恢复点确定性生成，并做独立重开与 OBJ 往返验收：
+
+```powershell
+& 'F:\dev\overcooke\tools\blender-5.2.0-windows-x64\blender.exe' `
+  --background 'F:\dev\overcooke\characters\bubu\source\bubu_work-v002.blend' `
+  --python 'F:\dev\overcooke\blender\build_bubu_v003.py' `
+  -- --mode dry-run
+
+& 'F:\dev\overcooke\tools\blender-5.2.0-windows-x64\blender.exe' `
+  --background 'F:\dev\overcooke\characters\bubu\source\bubu_work-v002.blend' `
+  --python 'F:\dev\overcooke\blender\build_bubu_v003.py' `
+  -- --mode build
+
+& 'F:\dev\overcooke\tools\blender-5.2.0-windows-x64\blender.exe' `
+  --background 'F:\dev\overcooke\characters\bubu\source\bubu_work-v003.blend' `
+  --python 'F:\dev\overcooke\blender\verify_bubu_v003.py' `
+  -- --package 'F:\dev\overcooke\exports\staging\175-bubu'
+```
+
+`--mode build` 只写新的 `bubu_work-v003.blend` 和 `exports/staging/175-bubu`，两者任一已存在都会拒绝覆盖。验证通过后，确认正式目标不存在，再把整个 staging 目录复制为 `exports/Resources/175-bubu`，随后针对正式目录重跑验证和 `Test-OC2DIYChefResource.ps1`。
+
+共同 GLB 与 `.blend` 工作文件有意被 Git 忽略；干净 clone 可以直接使用和校验已跟踪的 `exports/Resources/175-bubu`，但若要重新生成模型，必须先从本地备份恢复 `assets/source_yier/` 与 `characters/bubu/source/bubu_work-v002.blend`。构建和验证脚本使用脚本位置推导项目根目录，不依赖固定盘符。
 
 ## 生成内容
 

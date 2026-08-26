@@ -9,9 +9,9 @@ The original installer, OC2DIYChef adaptation work, packaging scripts,
 in this project are produced and maintained by DUKEY. Third-party models and
 dependencies remain credited to their respective authors below.
 
-## 一二 / Yier model
+## 一二 / Yier and 布布 / Bubu models
 
-The released Yier meshes, textures and `YierCap` are adapted from the
+The Yier meshes, textures, `YierCap`, and Bubu meshes and textures are adapted from the
 Sketchfab model **“表情包的一二布布Yier”**, uploaded by **小王子**
 (`hong2695429209`):
 
@@ -21,8 +21,8 @@ The source model is offered under the
 [Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/).
 This project modified it by cleaning and separating meshes, reducing or
 rebuilding game-facing geometry, creating OC2DIYChef body/hand/blink parts,
-adjusting UVs and textures, aligning scale and origins, and separating the cap
-as `YierCap`.
+adjusting UVs and textures, aligning scale and origins, separating the Yier cap
+as `YierCap`, and converting Bubu into an independent `ID=175` resource.
 
 CC BY 4.0 applies to the licensed model file. The repository does not claim
 that the uploader or this project owns every underlying right in the “一二和布布”

@@ -25,6 +25,7 @@ __pycache__/
 *.pyc
 
 # Build outputs, backups, failed experiments and release artifacts
+/build/
 **/bin/
 **/obj/
 /backups/

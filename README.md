@@ -8,6 +8,10 @@
 v1.0.0，使用一二模型基线 v004：角色 ID 为 `174`，默认帽子为 `YierCap`，并包含
 角色专属走路/冲刺尾气颜色 GUI 与可选的 OC2DIYLevel 0.9.0 异步加载兼容插件。
 
+布布的首个完整游戏资源已在 `feature/bubu` 分支生成：角色 ID 为 `175`，资源目录为
+`exports/Resources/175-bubu/`。它包含独立眨眼、四种手状态、双骨身体、刚性双脚和尾巴；
+Blender 重开、OBJ 往返及 OC2DIYChef 严格资源检查均已通过。正式合并前仍需完成实机动作验收。
+
 ## 下载与安装
 
 请从 [GitHub Releases](https://github.com/DUKEY-321/overcooked/releases)
@@ -61,7 +65,7 @@ tools/                  本机 Blender 便携环境与官方校验文件（运�
 
 1. 已下载的共同 Sketchfab 场景同时包含一二和布布，原件及原样解压文件固定放在 `assets/source_yier/` 作为只读留档；只有将来取得另一份独立布布源文件时才新建 `assets/source_bubu/`。
 2. 人工收集的正/侧/背面参考图、网页链接和来源清单放进 `characters/<角色>/references/`，不要在这里重复存模型下载包。
-3. `blender/` 只放自动化脚本。共同导入留档为 `characters/yier/source/yier_prototype.blend`；按角色分离后的里程碑使用 `characters/<角色>/source/<角色>_work-vNNN.blend`。一二当前产出基线为 `yier_work-v004.blend`，布布仍冻结在 `bubu_work-v002.blend`；旧版本保留为恢复点。
+3. `blender/` 只放自动化脚本。共同导入留档为 `characters/yier/source/yier_prototype.blend`；按角色分离后的里程碑使用 `characters/<角色>/source/<角色>_work-vNNN.blend`。一二当前产出基线为 `yier_work-v004.blend`，布布当前产出基线为 `bubu_work-v003.blend`；旧版本保留为恢复点。
 4. 烘焙前的 PSD/KRA/源贴图放在 `characters/<角色>/textures/`。
 5. Blender 导出的 OBJ、PNG、材质 TXT 和 `INFO` 只放在 `exports/Resources/<资源包名>/`；自定义帽放在 `exports/Resources/HATS/<帽名>/`。名称应稳定且只使用 ASCII，例如 `174-yier` 和 `YierCap`。
 6. ID 必须先和已安装资源检查冲突，再写入 `INFO`。`0..63` 为 AYCE 保留，建议从 `64..254` 中选择未占用值。
@@ -120,6 +124,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-OC2DIYChefRes
   -Path '.\exports\Resources\174-yier' -RequirePackages
 ```
 
+布布资源使用：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-OC2DIYChefResource.ps1 `
+  -Path '.\exports\Resources\175-bubu' -RequirePackages
+```
+
 自定义帽使用单独的严格校验器：
 
 ```powershell
@@ -142,7 +153,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-OC2DIYChefHat
 
 ## 许可证
 
-本仓库原创代码和脚本使用 [MIT License](LICENSE)。一二模型和帽子来自
+本仓库原创代码和脚本使用 [MIT License](LICENSE)。一二、布布模型和一二帽子来自
 Sketchfab 上传者小王子（`hong2695429209`）发布的 CC BY 4.0 模型，完整署名、
 修改说明与第三方依赖见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 和
 [LICENSES](LICENSES/)。这是非官方、非商业测试 MOD；MIT 不覆盖第三方模型、

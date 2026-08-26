@@ -8,7 +8,7 @@ Blender 界面核对确认 `assets/source_yier/yier_b15f13be_converted.glb` 并�
 - 上传者：小王子（`hong2695429209`）
 - 本地文件与校验：`assets/source_yier/SHA256SUMS.txt`
 - 许可与署名：`LICENSES/yier-sketchfab-b15f13be.md`
-- 使用范围：仅本地单机、非商业、不分发
+- 使用范围：允许在 `DUKEY-321/overcooked` 公开仓库及 Release 中进行非商业测试分发；必须保留署名、许可链接和修改说明，角色形象底层权利仍为 `PENDING`
 
 ## 官方形象与权利线索
 
@@ -46,4 +46,4 @@ Blender 界面核对确认 `assets/source_yier/yier_b15f13be_converted.glb` 并�
 
 - 名为 `Bubu with rotating eyes` 的模型实际更接近 Labubu 风格，且来源链不可靠，不属于“一二和布布”，不采用。
 
-状态：共同 Sketchfab 文件可用于当前本地原型；其他候选仍为 `REFERENCE_ONLY`，没有下载或进入项目。公开发布前仍需另行确认角色形象授权。
+状态：共同 Sketchfab 文件依据 CC BY 4.0 用于当前本地原型及公开非商业测试；其他候选仍为 `REFERENCE_ONLY`，没有下载或进入项目。该测试范围不等于已取得角色形象底层授权；若权利方提出要求，应暂停分发并复核或下架相关资产。
